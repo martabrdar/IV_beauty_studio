@@ -1,75 +1,543 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold:        #C9A84C;
+  --gold-light:  #E8D48B;
+  --gold-dark:   #A07830;
+  --black:       #0A0A0A;
+  --black-soft:  #111111;
+  --black-card:  #161616;
+  --black-border:#2A2A2A;
+  --white:       #F5F0E8;
+  --white-dim:   #C8BFB0;
+  --gray:        #888880;
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'Montserrat', sans-serif;
+
+  --transition: 0.3s ease;
+  --radius: 2px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+/* ── TIPOGRAFIJA ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+
+h1 { font-size: 3rem; line-height: 1.1; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover { color: var(--gold-light); }
+
+/* ── LINKOVI NAVIGACIJE ── */
+.nav-link {
+  color: var(--white-dim) !important;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color var(--transition) !important;
+  padding: 0.5rem 1rem !important;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--gold) !important;
+}
+
+/* ── HEADER ── */
+.navbar {
+  background-color: var(--black-soft) !important;
+  border-bottom: 1px solid var(--black-border);
+  padding: 1.2rem 0;
+}
+
+.navbar-brand {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--white) !important;
+  letter-spacing: 0.08em;
+}
+
+.navbar-brand .brand-accent {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.navbar-toggler {
+  border-color: var(--black-border) !important;
+}
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* ── MAIN ── */
 main {
   min-height: 80vh;
-  user-select: none;
 }
 
-.rating span {
-  margin: 0.1rem;
+/* ── CONTAINER ŠIRINA ── */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: 50% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.rating svg {
-  color: #E6CD69;
+/* ── FOOTER ── */
+footer {
+  background-color: var(--black-soft);
+  border-top: 1px solid var(--black-border);
+  padding: 2rem 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
 }
 
-.rating-text {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding-left: 0.5rem;
+/* ── DUGMAD ── */
+.btn-gold {
+  background-color: var(--gold);
+  border: 1px solid var(--gold);
+  color: var(--black);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.btn-gold:hover {
+  background-color: var(--gold-light);
+  border-color: var(--gold-light);
+  color: var(--black);
+  transform: translateY(-1px);
 }
 
-.product-title {
-  height: 2.5em; /* Set a fixed height */
-  overflow: hidden; /* Hide overflow content */
-  text-overflow: ellipsis; /* Add ellipsis for long text */
-  white-space: nowrap; /* Prevent wrapping */
-
-  font-size: 1.1rem;
-  color: #222;
-  text-decoration: none;
+.btn-outline-gold {
+  background-color: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.btn-outline-gold:hover {
+  background-color: var(--gold);
+  color: var(--black);
+  transform: translateY(-1px);
 }
 
-table td,
-table th {
-  text-align: center;
+/* ── KARTICE USLUGA ── */
+.service-card {
+  background-color: var(--black-card);
+  border: 1px solid var(--black-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--transition), transform var(--transition);
+  height: 100%;
+}
+.service-card:hover {
+  border-color: var(--gold-dark);
+  transform: translateY(-4px);
 }
 
-.review {
-  margin-top: 30px;
-}
-
-.review h2 {
-  font-size: 24px;
-  background: #f4f4f4;
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-.review button {
-  margin-top: 10px;
-}
-
-.carousel-caption {
-  position: absolute;
+.service-card img {
   width: 100%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  height: 220px;
+  object-fit: cover;
+  filter: brightness(0.85);
+  transition: filter var(--transition);
+}
+.service-card:hover img {
+  filter: brightness(1);
 }
 
-.add-to-cart-btn {
-  background-color: #30848e;
-  border-color: #30848e;
-  color: white;
+.service-card .card-body {
+  padding: 1.5rem;
 }
 
-.add-to-cart-btn:hover {
-  background-color: #256a72;
-  border-color: #256a72;
-  color: white;
+.service-card .card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
 }
 
-.add-to-cart-btn:disabled {
-  background-color: #9aaeb1;
-  border-color: #9aaeb1;
+.service-card .card-price {
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.service-card .card-text {
+  color: var(--gray);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+/* ── RATING ── */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 0.75rem;
+}
+.rating svg {
+  color: var(--gold);
+  font-size: 0.8rem;
+}
+.rating-text {
+  font-size: 0.7rem;
+  color: var(--gray);
+  margin-left: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* ── HERO SEKCIJA ── */
+.hero {
+  background-color: var(--black-soft);
+  border-bottom: 1px solid var(--black-border);
+  padding: 6rem 0 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-subtitle {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--white);
+}
+
+.hero h1 em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.hero p {
+  color: var(--white-dim);
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.hero-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 2rem;
+}
+
+/* ── SEKCIJE ── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--white);
+  margin-bottom: 3rem;
+}
+
+/* ── FILTER KATEGORIJE ── */
+.category-filter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1px solid var(--black-border);
+  color: var(--gray);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-body);
+}
+.filter-btn:hover,
+.filter-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── PRODUCT DETAIL ── */
+.product-detail-img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  filter: brightness(0.9);
+}
+
+.product-detail-price {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--gold);
+  margin: 1rem 0;
+}
+
+.product-detail-desc {
+  color: var(--white-dim);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  border-left: 2px solid var(--gold-dark);
+  padding-left: 1rem;
+}
+
+/* ── FORM STRANICE (Login/Register/Booking) ── */
+.form-page {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.form-box {
+  background-color: var(--black-card);
+  border: 1px solid var(--black-border);
+  border-radius: var(--radius);
+  padding: 3rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.form-box h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.form-box .form-subtitle {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 0.4rem;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--black-soft) !important;
+  border: 1px solid var(--black-border) !important;
+  color: var(--white) !important;
+  border-radius: var(--radius) !important;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 0.7rem 1rem;
+  transition: border-color var(--transition);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--gold-dark) !important;
+  box-shadow: none !important;
+  outline: none;
+}
+.form-control::placeholder {
+  color: var(--gray) !important;
+}
+
+/* ── BOOKING ── */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.time-slot {
+  background: transparent;
+  border: 1px solid var(--black-border);
+  color: var(--gray);
+  padding: 0.6rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--font-body);
+}
+.time-slot:hover {
+  border-color: var(--gold-dark);
+  color: var(--gold);
+}
+.time-slot.selected {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+  font-weight: 500;
+}
+.time-slot:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── BADGE KATEGORIJE ── */
+.category-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  border: 1px solid var(--gold-dark);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+}
+
+/* ── DIVIDER ORNAMENT ── */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0;
+}
+.ornament::before,
+.ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--black-border);
+}
+.ornament span {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+/* ── ALERTS ── */
+.alert-dark-custom {
+  background-color: var(--black-card);
+  border: 1px solid var(--black-border);
+  color: var(--white-dim);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ── RECENZIJE ── */
+.review-card {
+  background-color: var(--black-card);
+  border: 1px solid var(--black-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.review-author {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+}
+.review-date {
+  font-size: 0.65rem;
+  color: var(--gray);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.review-text {
+  color: var(--white-dim);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* ── RESPONZIVNOST ── */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2.2rem; }
+  .form-box { padding: 2rem 1.5rem; }
+  .booking-grid { grid-template-columns: 1fr 1fr; }
+  .product-detail-img { height: 280px; }
 }

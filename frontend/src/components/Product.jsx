@@ -1,27 +1,28 @@
-import React from 'react'
-import {Card} from "react-bootstrap";
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
 
-const Product = ({product}) => {
+const Product = ({ product }) => {
   return (
-    <Card className="my-3 p-3 rounded">
-        <Link to={`/product/${product._id}`}>
-            <Card.Img src={product.image} variant='top' 
-                style={{height: '250px', objectFit:'cover'}}/>
+    <div className="service-card">
+      <Link to={`/product/${product._id}`}>
+        <img src={product.image} alt={product.name} />
+      </Link>
+      <div className="card-body">
+        <span className="category-badge">{product.category}</span>
+        <Link to={`/product/${product._id}`} style={{ textDecoration: 'none' }}>
+          <div className="card-title">{product.name}</div>
         </Link>
-        <Card.Body>
-            <Link to={`/product/${product._id}`}>
-                <Card.Title as="div"className='product-title'><strong>{product.name}</strong></Card.Title>
-            </Link>
-            <Card.Text as="div">
-            <Rating value={product.rating} text={`${product.numReviews} recenzija`} />
-            </Card.Text>
-            <Card.Text as="div">{product.price} RSD </Card.Text>
-        </Card.Body>
+        <Rating value={product.rating} text={`${product.numReviews} recenzija`} />
+        <div className="card-price">{product.price.toLocaleString('sr-RS')} RSD</div>
+        <Link to={`/booking?service=${product._id}`}>
+          <button className="btn-gold" style={{ width: '100%' }}>
+            Zakaži termin
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
-    </Card>
-  )
-}
-
-export default Product
+export default Product;
