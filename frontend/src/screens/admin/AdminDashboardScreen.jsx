@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from '../../slices/AdminSlice';
-import { useGetStatsQuery } from '../../slices/AdminApiSlice';
-import { useGetAllBookingsQuery } from '../../slices/BookingsApiSlice';
 
 const STATUS_COLORS = {
   zakazano: 'var(--gold)',
@@ -17,18 +15,37 @@ const AdminDashboardScreen = () => {
   const navigate = useNavigate();
   const { adminInfo } = useSelector((state) => state.admin);
 
-  const { data: stats } = useGetStatsQuery(undefined, { skip: !adminInfo });
-  const { data: bookings } = useGetAllBookingsQuery(undefined, { skip: !adminInfo });
+  const [bookings, setBookings] = useState([]);
+  const [stats, setStats] = useState(null);
 
-  if (!adminInfo) {
-    navigate('/admin/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!adminInfo) {
+      navigate('/admin/login');
+      return;
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${adminInfo.token}`,
+    };
+
+    fetch('http://localhost:5000/api/bookings', { headers })
+      .then((r) => r.json())
+      .then((data) => setBookings(Array.isArray(data) ? data : []))
+      .catch((err) => console.error(err));
+
+    fetch('http://localhost:5000/api/admin/stats', { headers })
+      .then((r) => r.json())
+      .then((data) => setStats(data))
+      .catch((err) => console.error(err));
+  }, [adminInfo, navigate]);
 
   const handleLogout = () => {
     dispatch(adminLogout());
     navigate('/admin/login');
   };
+
+  if (!adminInfo) return null;
 
   return (
     <Container className="py-5">
@@ -69,7 +86,7 @@ const AdminDashboardScreen = () => {
       {/* Poslednji termini */}
       <div className="mb-3"><p className="section-title">Poslednji termini</p></div>
 
-      {!bookings || bookings.length === 0 ? (
+      {bookings.length === 0 ? (
         <div className="alert-dark-custom" style={{ textAlign: 'center', color: 'var(--gray)', fontSize: '0.8rem' }}>
           Nema zakazanih termina.
         </div>

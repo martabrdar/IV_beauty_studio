@@ -27,8 +27,8 @@ const ProfileScreen = () => {
   };
 
   const today = new Date().toISOString().split('T')[0];
-  const upcoming = bookings?.filter((b) => b.date >= today && b.status === 'zakazano') || [];
-  const past = bookings?.filter((b) => b.date < today || b.status !== 'zakazano') || [];
+  const upcoming = userInfo && bookings ? bookings.filter((b) => b.date >= today && b.status === 'zakazano') : [];
+  const past = userInfo && bookings ? bookings.filter((b) => b.date < today || b.status !== 'zakazano') : [];
 
   return (
     <Container className="py-5">
@@ -59,24 +59,37 @@ const ProfileScreen = () => {
             </div>
           </div>
 
-          <div className="mb-2"><p className="section-title">Predstojeći</p></div>
-
-          {isLoading ? (
-            <p style={{ color: 'var(--gray)' }}>Učitavanje...</p>
-          ) : upcoming.length === 0 ? (
-            <div className="alert-dark-custom mb-4" style={{ textAlign: 'center' }}>
-              <div style={{ marginBottom: '1rem', color: 'var(--gray)', fontSize: '0.8rem' }}>Nemate zakazanih termina.</div>
-              <Link to="/booking"><button className="btn-gold" style={{ padding: '0.6rem 1.5rem' }}>Zakaži termin</button></Link>
+          {!userInfo ? (
+            <div className="alert-dark-custom" style={{ textAlign: 'center' }}>
+              <div style={{ marginBottom: '1rem', color: 'var(--gray)', fontSize: '0.8rem' }}>
+                Prijavite se da biste videli vaše termine.
+              </div>
+              <Link to="/login">
+                <button className="btn-gold" style={{ padding: '0.6rem 1.5rem' }}>Prijavi se</button>
+              </Link>
             </div>
           ) : (
-            upcoming.map((b) => <BookingCard key={b._id} booking={b} onCancel={handleCancel} showCancel />)
-          )}
-
-          {past.length > 0 && (
             <>
-              <div className="ornament"><span>✦</span></div>
-              <div className="mb-2"><p className="section-title">Istorija</p></div>
-              {past.map((b) => <BookingCard key={b._id} booking={b} onCancel={handleCancel} showCancel={false} />)}
+              <div className="mb-2"><p className="section-title">Predstojeći</p></div>
+
+              {isLoading ? (
+                <p style={{ color: 'var(--gray)' }}>Učitavanje...</p>
+              ) : upcoming.length === 0 ? (
+                <div className="alert-dark-custom mb-4" style={{ textAlign: 'center' }}>
+                  <div style={{ marginBottom: '1rem', color: 'var(--gray)', fontSize: '0.8rem' }}>Nemate zakazanih termina.</div>
+                  <Link to="/booking"><button className="btn-gold" style={{ padding: '0.6rem 1.5rem' }}>Zakaži termin</button></Link>
+                </div>
+              ) : (
+                upcoming.map((b) => <BookingCard key={b._id} booking={b} onCancel={handleCancel} showCancel />)
+              )}
+
+              {past.length > 0 && (
+                <>
+                  <div className="ornament"><span>✦</span></div>
+                  <div className="mb-2"><p className="section-title">Istorija</p></div>
+                  {past.map((b) => <BookingCard key={b._id} booking={b} onCancel={handleCancel} showCancel={false} />)}
+                </>
+              )}
             </>
           )}
         </Col>

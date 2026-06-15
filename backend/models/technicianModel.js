@@ -4,6 +4,7 @@ const technicianSchema = mongoose.Schema(
     {
         name: { type: String, required: true },
         image: { type: String },
+        categories: [{ type: String }],
         services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
     },
     { timestamps: true }

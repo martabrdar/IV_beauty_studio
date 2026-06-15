@@ -29,6 +29,7 @@ import ProfileScreen  from './screens/ProfileScreen';
 import AdminLoginScreen     from './screens/admin/AdminLoginScreen';
 import AdminDashboardScreen from './screens/admin/AdminDashboardScreen';
 import AdminServicesScreen  from './screens/admin/AdminServicesScreen';
+import AdminUsersScreen     from './screens/admin/AdminUsersScreen';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
       <Route path="admin/login"     element={<AdminLoginScreen />} />
       <Route path="admin/dashboard" element={<AdminDashboardScreen />} />
       <Route path="admin/services"  element={<AdminServicesScreen />} />
+      <Route path="admin/users"     element={<AdminUsersScreen />} />
     </Route>
   )
 );

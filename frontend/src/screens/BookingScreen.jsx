@@ -65,10 +65,7 @@ const BookingScreen = () => {
   const getEligibleTechs = () => {
     if (!chosenService || !technicians || !selectedServiceObj) return [];
     return technicians.filter((t) =>
-      t.services?.some((s) =>
-        (typeof s === 'string' ? s : s._id) === chosenService ||
-        s.category === selectedServiceObj.category
-      )
+      t.categories?.includes(selectedServiceObj.category)
     );
   };
 
