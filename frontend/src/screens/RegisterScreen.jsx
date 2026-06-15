@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRegisterMutation } from '../slices/UsersApiSlice';
+import { setUser } from '../slices/UserSlice';
 
 const RegisterScreen = () => {
   const [name, setName] = useState('');
@@ -8,16 +11,31 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Priprema za backend
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [register, { isLoading }] = useRegisterMutation();
+  const { userInfo } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [userInfo, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError('Lozinke se ne podudaraju.');
       return;
     }
-    setError('');
-    console.log('Register:', { name, email, password });
-    // TODO: dispatch(register(name, email, password))
+    try {
+      const res = await register({ name, email, password }).unwrap();
+      dispatch(setUser(res));
+      navigate('/');
+    } catch (err) {
+      setError(err?.data?.message || 'Greška pri registraciji');
+    }
   };
 
   return (
@@ -85,8 +103,13 @@ const RegisterScreen = () => {
             />
           </div>
 
-          <button type="submit" className="btn-gold" style={{ width: '100%', marginBottom: '1rem' }}>
-            Registruj se
+          <button 
+            type="submit" 
+            className="btn-gold" 
+            style={{ width: '100%', marginBottom: '1rem' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Učitavanje...' : 'Registruj se'}
           </button>
         </form>
 

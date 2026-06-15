@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import products from '../products_list';
+import { useGetServicesQuery } from '../slices/ServicesApiSlice';
 import Product from '../components/Product';
 
 const CATEGORIES = ['Sve', 'Manikir', 'Pedikir', 'Spray Tan'];
 
 const ServicesScreen = () => {
   const [activeCategory, setActiveCategory] = useState('Sve');
+  const { data: services, isLoading, error } = useGetServicesQuery();
 
-  const filtered =
+  const filtered = !services ? [] :
     activeCategory === 'Sve'
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+      ? services
+      : services.filter((p) => p.category === activeCategory);
+
+  if (isLoading) return <Container className="py-5"><p style={{ color: 'var(--gray)' }}>Učitavanje...</p></Container>;
+  if (error) return <Container className="py-5"><p style={{ color: '#eb5757' }}>Greška pri učitavanju usluga.</p></Container>;
 
   return (
     <Container className="py-5">
-      {/* Naslov */}
       <div className="mb-4">
         <p className="section-title">Šta nudimo</p>
         <h2 className="section-heading">Naše usluge</h2>
       </div>
 
-      {/* Filter */}
       <div className="category-filter">
         {CATEGORIES.map((cat) => (
           <button
@@ -34,7 +36,6 @@ const ServicesScreen = () => {
         ))}
       </div>
 
-      {/* Grid usluga */}
       <Row>
         {filtered.map((product) => (
           <Col key={product._id} sm={12} md={6} lg={4} className="mb-4">

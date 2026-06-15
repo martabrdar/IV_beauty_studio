@@ -1,17 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../slices/UsersApiSlice';
+import { setUser } from '../slices/UserSlice';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Priprema za backend — ovde će ići API poziv
-  const handleSubmit = (e) => {
+  const [login, { isLoading }] = useLoginMutation();
+  const { userInfo } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [userInfo, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login:', { email, password });
-    // TODO: dispatch(login(email, password))
-    // navigate('/');
+    try {
+      const res = await login({ email, password }).unwrap();
+      dispatch(setUser(res));
+      navigate('/');
+    } catch (err) {
+      setError(err?.data?.message || 'Greška pri prijavi');
+    }
   };
 
   return (
@@ -23,6 +41,12 @@ const LoginScreen = () => {
         <div className="ornament" style={{ margin: '0 0 1.5rem' }}>
           <span style={{ fontSize: '0.8rem' }}>✦</span>
         </div>
+
+        {error && (
+          <div className="alert-dark-custom mb-3" style={{ color: '#eb5757', borderColor: '#eb5757' }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -49,8 +73,13 @@ const LoginScreen = () => {
             />
           </div>
 
-          <button type="submit" className="btn-gold" style={{ width: '100%', marginBottom: '1rem' }}>
-            Prijavi se
+          <button 
+            type="submit" 
+            className="btn-gold" 
+            style={{ width: '100%', marginBottom: '1rem' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Učitavanje...' : 'Prijavi se'}
           </button>
         </form>
 

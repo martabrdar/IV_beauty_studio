@@ -17,6 +17,6 @@ export const apiSlice = createApi({
     },
   }),
   // Tagovi za cache invalidaciju
-  tagTypes: ['User', 'Booking', 'Service', 'Admin'],
+  tagTypes: ['User', 'Booking', 'Service', 'Admin', 'Technician'],
   endpoints: () => ({}),
 });
