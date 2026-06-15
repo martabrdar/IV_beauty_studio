@@ -1,43 +1,29 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from '../../slices/AdminSlice';
-// import { useGetStatsQuery } from '../../slices/AdminApiSlice';
-// import { useGetAllBookingsQuery } from '../../slices/BookingsApiSlice';
-
-
-// Privremeni termini iz localStorage
-const getBookings = () => {
-  try { return JSON.parse(localStorage.getItem('iv_bookings') || '[]'); }
-  catch { return []; }
-};
+import { useGetStatsQuery } from '../../slices/AdminApiSlice';
+import { useGetAllBookingsQuery } from '../../slices/BookingsApiSlice';
 
 const STATUS_COLORS = {
-  zakazan: 'var(--gold)',
-  završen: '#6fcf97',
-  otkazan: '#eb5757',
+  zakazano: 'var(--gold)',
+  završeno: '#6fcf97',
+  otkazano: '#eb5757',
 };
 
 const AdminDashboardScreen = () => {
-  const dispatch  = useDispatch();
-  const navigate  = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { adminInfo } = useSelector((state) => state.admin);
 
-  // Redirect ako nije admin
+  const { data: stats } = useGetStatsQuery(undefined, { skip: !adminInfo });
+  const { data: bookings } = useGetAllBookingsQuery(undefined, { skip: !adminInfo });
+
   if (!adminInfo) {
     navigate('/admin/login');
     return null;
   }
-
-  // Privremeni podaci — zameniće se API pozivima
-  const bookings = getBookings();
-  const stats = {
-    ukupnoTermina:  bookings.length,
-    danas:          bookings.filter(b => b.date === new Date().toISOString().split('T')[0]).length,
-    zakazano:       bookings.filter(b => b.status === 'zakazan').length,
-    prihod:         bookings.filter(b => b.status !== 'otkazan').reduce((sum, b) => sum + (b.servicePrice || 0), 0),
-  };
 
   const handleLogout = () => {
     dispatch(adminLogout());
@@ -46,8 +32,6 @@ const AdminDashboardScreen = () => {
 
   return (
     <Container className="py-5">
-
-      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3rem' }}>
         <div>
           <p className="section-title">Admin panel</p>
@@ -64,93 +48,56 @@ const AdminDashboardScreen = () => {
       {/* Statistike */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem' }}>
         {[
-          { label: 'Ukupno termina',  value: stats.ukupnoTermina },
-          { label: 'Danas',           value: stats.danas },
-          { label: 'Zakazano',        value: stats.zakazano },
-          { label: 'Prihod (RSD)',    value: stats.prihod.toLocaleString('sr-RS') },
+          { label: 'Ukupno termina', value: stats?.totalBookings ?? '—' },
+          { label: 'Danas', value: stats?.todayBookings ?? '—' },
+          { label: 'Korisnici', value: stats?.totalUsers ?? '—' },
+          { label: 'Prihod (RSD)', value: stats?.totalRevenue?.toLocaleString('sr-RS') ?? '—' },
         ].map((item, i) => (
-          <div key={i} style={{
-            flex: 1,
-            background: 'var(--black-card)',
-            border: '1px solid var(--black-border)',
-            borderRadius: 'var(--radius)',
-            padding: '1.25rem',
-            textAlign: 'center',
-          }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--gold)' }}>
-              {item.value}
-            </div>
-            <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gray)', marginTop: '0.4rem' }}>
-              {item.label}
-            </div>
+          <div key={i} style={{ flex: 1, background: 'var(--black-card)', border: '1px solid var(--black-border)', borderRadius: 'var(--radius)', padding: '1.25rem', textAlign: 'center' }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--gold)' }}>{item.value}</div>
+            <div style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gray)', marginTop: '0.4rem' }}>{item.label}</div>
           </div>
         ))}
       </div>
 
       {/* Brze akcije */}
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '3rem' }}>
-        <Link to="/admin/services">
-          <button className="btn-gold" style={{ fontSize: '0.7rem' }}>+ Dodaj uslugu</button>
-        </Link>
-        <Link to="/admin/bookings">
-          <button className="btn-outline-gold" style={{ fontSize: '0.7rem' }}>Svi termini</button>
-        </Link>
-        <Link to="/admin/users">
-          <button className="btn-outline-gold" style={{ fontSize: '0.7rem' }}>Korisnici</button>
-        </Link>
+        <Link to="/admin/services"><button className="btn-gold" style={{ fontSize: '0.7rem' }}>+ Dodaj uslugu</button></Link>
+        <Link to="/admin/users"><button className="btn-outline-gold" style={{ fontSize: '0.7rem' }}>Korisnici</button></Link>
       </div>
 
       {/* Poslednji termini */}
-      <div className="mb-3">
-        <p className="section-title">Poslednji termini</p>
-      </div>
+      <div className="mb-3"><p className="section-title">Poslednji termini</p></div>
 
-      {bookings.length === 0 ? (
+      {!bookings || bookings.length === 0 ? (
         <div className="alert-dark-custom" style={{ textAlign: 'center', color: 'var(--gray)', fontSize: '0.8rem' }}>
           Nema zakazanih termina.
         </div>
       ) : (
         [...bookings].reverse().slice(0, 10).map((b) => (
-          <div key={b.id} style={{
-            background: 'var(--black-card)',
-            border: '1px solid var(--black-border)',
-            borderRadius: 'var(--radius)',
-            padding: '1rem 1.25rem',
-            marginBottom: '0.5rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '0.8rem',
-          }}>
+          <div key={b._id} style={{ background: 'var(--black-card)', border: '1px solid var(--black-border)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
             <div>
               <div style={{ color: 'var(--white)', marginBottom: '0.2rem', fontFamily: 'var(--font-display)', fontSize: '1rem' }}>
-                {b.serviceName}
+                {b.service?.name}
               </div>
               <div style={{ color: 'var(--gray)', fontSize: '0.7rem' }}>
-                {b.technicianName} · {b.date} u {b.timeSlot}
+                {b.technician?.name} · {new Date(b.date).toLocaleDateString('sr-RS')} u {b.time}
+              </div>
+              <div style={{ color: 'var(--gray)', fontSize: '0.7rem' }}>
+                {b.user?.name} — {b.user?.email}
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ color: 'var(--gold)', marginBottom: '0.3rem' }}>
-                {b.servicePrice?.toLocaleString('sr-RS')} RSD
+                {b.service?.price?.toLocaleString('sr-RS')} RSD
               </div>
-              <div style={{
-                fontSize: '0.6rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: STATUS_COLORS[b.status] || 'var(--gray)',
-                border: `1px solid ${STATUS_COLORS[b.status] || 'var(--gray)'}`,
-                padding: '0.15rem 0.5rem',
-                borderRadius: 'var(--radius)',
-                display: 'inline-block',
-              }}>
+              <div style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: STATUS_COLORS[b.status] || 'var(--gray)', border: `1px solid ${STATUS_COLORS[b.status] || 'var(--gray)'}`, padding: '0.15rem 0.5rem', borderRadius: 'var(--radius)', display: 'inline-block' }}>
                 {b.status}
               </div>
             </div>
           </div>
         ))
       )}
-
     </Container>
   );
 };
