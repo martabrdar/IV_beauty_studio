@@ -20,6 +20,6 @@ export const apiSlice = createApi({
 },
   }),
   // Tagovi za cache invalidaciju
-  tagTypes: ['User', 'Booking', 'Service', 'Admin', 'Technician'],
+  tagTypes: ['User', 'Booking', 'Service', 'Admin', 'Technician', 'Review'],
   endpoints: () => ({}),
 });
