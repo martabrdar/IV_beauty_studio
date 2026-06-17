@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import store from './store';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -56,7 +57,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <PayPalScriptProvider options={{ clientId: "ATjyAyn8aTBhVEDrY8lNz8_lIHWqeoOw97vQ7_BNeWhh9Y9xcM_xg1Elcn8Yc8fpxJd2V_tOGbYCqzAH", currency: "EUR" }}>
+        <RouterProvider router={router} />
+      </PayPalScriptProvider>
     </Provider>
   </React.StrictMode>
 );

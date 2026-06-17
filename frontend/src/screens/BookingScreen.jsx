@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { FaPaypal, FaMoneyBillWave } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useGetServicesQuery } from '../slices/ServicesApiSlice';
 import { useGetTechniciansQuery } from '../slices/TechniciansApiSlice';
 import { useCreateBookingMutation } from '../slices/BookingsApiSlice';
@@ -76,15 +77,11 @@ const BookingScreen = () => {
   const step3Done = !!date && !!timeSlot;
   const step4Done = !!paymentMethod;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
+  const handleBooking = async () => {
     if (!userInfo) {
       navigate('/login');
       return;
     }
-
     try {
       await createBooking({
         serviceId: chosenService,
@@ -103,6 +100,13 @@ const BookingScreen = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (paymentMethod === 'uzivo') {
+      await handleBooking();
+    }
+  };
+
   if (submitted) {
     return (
       <div className="form-page">
@@ -111,7 +115,7 @@ const BookingScreen = () => {
           <h2 style={{ marginBottom: '0.5rem' }}>Termin zakazan</h2>
           <p style={{ color: 'var(--white-dim)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>
             {paymentMethod === 'paypal'
-              ? 'Plaćanje putem PayPal-a biće aktivirano uskoro.'
+              ? 'Uplata putem PayPal-a je uspešna!'
               : 'Platićete uživo prilikom dolaska.'}
           </p>
           <p style={{ color: 'var(--gray)', fontSize: '0.75rem', marginBottom: '2rem' }}>
@@ -307,9 +311,36 @@ const BookingScreen = () => {
                   <div style={{ marginBottom: '0.2rem' }}><strong style={{ color: 'var(--white)' }}>Plaćanje:</strong> {paymentMethod === 'paypal' ? 'PayPal' : 'Uživo'}</div>
                   <div><strong style={{ color: 'var(--white)' }}>Cena:</strong> {selectedServiceObj?.price?.toLocaleString('sr-RS')} RSD</div>
                 </div>
-                <button type="submit" className="btn-gold" style={{ width: '100%' }} disabled={isBooking}>
-                  {isBooking ? 'Slanje...' : paymentMethod === 'paypal' ? 'Nastavi na PayPal →' : 'Potvrdi rezervaciju'}
-                </button>
+
+                {paymentMethod === 'paypal' ? (
+                  <PayPalButtons
+                    style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' }}
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: (selectedServiceObj?.price / 117).toFixed(2),
+                              currency_code: 'EUR',
+                            },
+                            description: selectedServiceObj?.name,
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      await actions.order.capture();
+                      await handleBooking();
+                    }}
+                    onError={() => {
+                      setError('Greška pri PayPal plaćanju. Pokušajte ponovo.');
+                    }}
+                  />
+                ) : (
+                  <button type="submit" className="btn-gold" style={{ width: '100%' }} disabled={isBooking}>
+                    {isBooking ? 'Slanje...' : 'Potvrdi rezervaciju'}
+                  </button>
+                )}
               </>
             )}
 

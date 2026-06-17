@@ -117,9 +117,14 @@ const BookingCard = ({ booking, onCancel, showCancel }) => {
         <div style={{ color: 'var(--gold)', fontSize: '0.9rem', fontWeight: 500, marginBottom: '0.5rem' }}>
           {booking.service?.price?.toLocaleString('sr-RS')} RSD
         </div>
-        <div style={{ display: 'inline-block', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: status.color, border: `1px solid ${status.color}`, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius)', marginBottom: showCancel ? '0.75rem' : 0 }}>
+        <div style={{ display: 'inline-block', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: status.color, border: `1px solid ${status.color}`, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius)', marginBottom: '0.4rem' }}>
           {status.label}
         </div>
+        {booking.isPaid && (
+          <div style={{ fontSize: '0.6rem', color: '#6fcf97', letterSpacing: '0.05em', marginBottom: showCancel ? '0.5rem' : 0 }}>
+            ✓ Plaćeno
+          </div>
+        )}
         {showCancel && booking.status === 'zakazano' && (
           <div>
             <button onClick={() => onCancel(booking._id)} style={{ background: 'transparent', border: '1px solid var(--black-border)', color: 'var(--gray)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0.3rem 0.75rem', borderRadius: 'var(--radius)', cursor: 'pointer' }}>

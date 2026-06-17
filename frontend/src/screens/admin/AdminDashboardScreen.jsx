@@ -108,9 +108,14 @@ const AdminDashboardScreen = () => {
               <div style={{ color: 'var(--gold)', marginBottom: '0.3rem' }}>
                 {b.service?.price?.toLocaleString('sr-RS')} RSD
               </div>
-              <div style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: STATUS_COLORS[b.status] || 'var(--gray)', border: `1px solid ${STATUS_COLORS[b.status] || 'var(--gray)'}`, padding: '0.15rem 0.5rem', borderRadius: 'var(--radius)', display: 'inline-block' }}>
+              <div style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: STATUS_COLORS[b.status] || 'var(--gray)', border: `1px solid ${STATUS_COLORS[b.status] || 'var(--gray)'}`, padding: '0.15rem 0.5rem', borderRadius: 'var(--radius)', display: 'inline-block', marginBottom: '0.3rem' }}>
                 {b.status}
               </div>
+              {b.isPaid && (
+                <div style={{ fontSize: '0.6rem', color: '#6fcf97', letterSpacing: '0.05em' }}>
+                  ✓ Plaćeno
+                </div>
+              )}
             </div>
           </div>
         ))

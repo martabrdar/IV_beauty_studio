@@ -8,6 +8,7 @@ const appointmentSchema = mongoose.Schema(
         date: { type: Date, required: true },
         time: { type: String, required: true },
         status: { type: String, default: "zakazano", enum: ["zakazano", "otkazano", "završeno"] },
+        isPaid: { type: Boolean, default: false },
     },
     { timestamps: true }
 );

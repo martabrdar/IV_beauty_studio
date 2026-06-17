@@ -4,18 +4,17 @@ const createBooking = async (req, res) => {
     try {
         const { serviceId, serviceName, servicePrice, technicianId, technicianName, date, timeSlot, paymentMethod, note } = req.body;
 
-        // Provera da li tehničar već ima termin u isto vreme istog dana
         const startOfDay = new Date(date);
         startOfDay.setHours(0, 0, 0, 0);
         const endOfDay = new Date(date);
         endOfDay.setHours(23, 59, 59, 999);
 
         const existingBooking = await Appointment.findOne({
-        technician: technicianId,
-        date: { $gte: startOfDay, $lte: endOfDay },
-        time: timeSlot,
-        status: "zakazano",
-});
+            technician: technicianId,
+            date: { $gte: startOfDay, $lte: endOfDay },
+            time: timeSlot,
+            status: { $in: ["zakazano", "završeno"] },
+        });
 
         if (existingBooking) {
             return res.status(400).json({ message: "Tehničar već ima zakazan termin u to vreme. Izaberite drugo vreme." });
@@ -28,6 +27,7 @@ const createBooking = async (req, res) => {
             date,
             time: timeSlot,
             status: "zakazano",
+            isPaid: paymentMethod === 'paypal',
         });
         res.status(201).json(booking);
     } catch (error) {
